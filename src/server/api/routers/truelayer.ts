@@ -31,8 +31,8 @@ export const truelayerRouter = createTRPCRouter({
             "Content-Type": "application/x-www-form-urlencoded",
         },
       })
-        const auth_response = await auth_request.json();
+        const auth_response = await auth_request.json() as exchangeCodeResponse;
         console.log(auth_response);
-        return auth_response as exchangeCodeResponse;
+        return auth_response;
     }),
 });
