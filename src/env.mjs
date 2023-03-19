@@ -25,7 +25,9 @@ const server = z.object({
   GOOGLE_CLIENT_SECRET: z.string(),
   TRUELAYER_CLIENT_ID: z.string(),
   TRUELAYER_CLIENT_SECRET: z.string(),
-  TRUELAYER_AUTH_URL: z.string().url(),
+  TRUELAYER_AUTH_DIALOG: z.string().url(),
+  TRUELAYER_AUTH_API: z.string().url(),
+  TRUELAYER_DATA_API: z.string().url(),
 });
 
 /**
@@ -53,7 +55,9 @@ const processEnv = {
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   TRUELAYER_CLIENT_ID: process.env.TRUELAYER_CLIENT_ID,
   TRUELAYER_CLIENT_SECRET: process.env.TRUELAYER_CLIENT_SECRET,
-  TRUELAYER_AUTH_URL: process.env.TRUELAYER_AUTH_URL,
+  TRUELAYER_AUTH_DIALOG: process.env.TRUELAYER_AUTH_DIALOG,
+  TRUELAYER_AUTH_API: process.env.TRUELAYER_AUTH_API,
+  TRUELAYER_DATA_API: process.env.TRUELAYER_DATA_API,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 
