@@ -8,6 +8,7 @@ interface exchangeCodeResponse {
   token_type: string;
   refresh_token: string;
   scope: string;
+  userId?: string;
 }
 
 export const truelayerRouter = createTRPCRouter({
@@ -17,7 +18,7 @@ export const truelayerRouter = createTRPCRouter({
         code: z.string(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       const params = {
         grant_type: "authorization_code",
         client_id: env.TRUELAYER_CLIENT_ID,
@@ -26,9 +27,7 @@ export const truelayerRouter = createTRPCRouter({
         code: input.code,
       };
       try {
-        const connect_URL = `${
-          env.TRUELAYER_AUTH_API
-        }/connect/token`;
+        const connect_URL = `${env.TRUELAYER_AUTH_API}/connect/token`;
         const auth_request = await fetch(connect_URL, {
           method: "POST",
           headers: {
@@ -39,7 +38,19 @@ export const truelayerRouter = createTRPCRouter({
         const auth_response =
           (await auth_request.json()) as exchangeCodeResponse;
         console.log(auth_response);
-        return {auth_response};
+
+        const newToken = ctx.prisma.bankToken.create({
+          data: {
+            access_token: auth_response.access_token,
+            expires_in: auth_response.expires_in,
+            token_type: auth_response.token_type,
+            refresh_token: auth_response.refresh_token,
+            scope: auth_response.scope,
+            userId: ctx.session?.user?.id,
+          },
+        });
+        //return { auth_response };
+        return newToken;
       } catch (error) {
         console.log(error);
       }
