@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
-
+import Link from "next/link";
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
@@ -18,14 +18,20 @@ const Home: NextPage = () => {
       <div>
         {session ? (
           <>
-            <p>Signed in as {session.user?.name} </p>
-            <button
-              onClick={() => {
-                signOut().catch(console.log);
-              }}
-            >
-              Sign out
-            </button>
+            <div>
+              <p>Signed in as {session.user?.name} </p>
+              <button
+                onClick={() => {
+                  signOut().catch(console.log);
+                }}
+              >
+                Sign out
+              </button>
+              <br/>
+              <a href="https://auth.truelayer.com/?response_type=code&client_id=364512-83024d&scope=info%20accounts%20balance%20cards%20transactions%20direct_debits%20standing_orders%20offline_access&redirect_uri=http://localhost:3000/callback&providers=uk-ob-all%20uk-oauth-all">
+                Link Bank Account
+              </a>
+            </div>
           </>
         ) : (
           <>
