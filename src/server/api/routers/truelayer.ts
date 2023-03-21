@@ -23,7 +23,7 @@ export const truelayerRouter = createTRPCRouter({
         grant_type: "authorization_code",
         client_id: env.TRUELAYER_CLIENT_ID,
         client_secret: env.TRUELAYER_CLIENT_SECRET,
-        redirect_uri: "http://localhost:3000/callback",
+        redirect_uri: "http://localhost:3000/callback", // TODO: change this to env to switch between dev and prod in vercel
         code: input.code,
       };
       try {
@@ -41,7 +41,7 @@ export const truelayerRouter = createTRPCRouter({
         if (!session || !session.user) {
           throw new Error("No user session");
         }
-        const token = await prisma.bank.create({
+        await prisma.bank.create({
           data: {
             access_token: auth_response.access_token,
             expires_in: auth_response.expires_in,
