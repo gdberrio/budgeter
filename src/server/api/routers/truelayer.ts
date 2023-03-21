@@ -8,7 +8,6 @@ interface exchangeCodeResponse {
   token_type: string;
   refresh_token: string;
   scope: string;
-  userId?: string;
 }
 
 export const truelayerRouter = createTRPCRouter({
@@ -19,6 +18,7 @@ export const truelayerRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
       const params = {
         grant_type: "authorization_code",
         client_id: env.TRUELAYER_CLIENT_ID,
@@ -38,22 +38,22 @@ export const truelayerRouter = createTRPCRouter({
         const auth_response =
           (await auth_request.json()) as exchangeCodeResponse;
         console.log(auth_response);
-
-        const newToken = ctx.prisma.bankToken.create({
+        if (!session || !session.user) {
+          throw new Error("No user session");
+        }
+        const token = await prisma.bank.create({
           data: {
             access_token: auth_response.access_token,
             expires_in: auth_response.expires_in,
             token_type: auth_response.token_type,
             refresh_token: auth_response.refresh_token,
             scope: auth_response.scope,
-            userId: ctx.session?.user?.id,
+            userId: session?.user.id,
           },
         });
-        //return { auth_response };
-        return newToken;
+        return { auth_response };
       } catch (error) {
         console.log(error);
       }
-      console.log(JSON.stringify(params));
     }),
 });

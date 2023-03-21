@@ -42,14 +42,14 @@ model Session {
 }
 
 model User {
-  id            String      @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String?     @unique
+  email         String?   @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  BankToken     BankToken[]
+  Bank          Bank[]
 }
 
 model VerificationToken {
@@ -60,12 +60,12 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model BankToken {
+model Bank {
   access_token  String @unique
   expires_in    Int
   token_type    String
   refresh_token String
   scope         String
-  userId        String @id
+  userId        String 
   user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
